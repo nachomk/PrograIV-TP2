@@ -1,1 +1,65 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --color-primario: #3A6B75;
+  --color-secundario: #C17F59;
+  --color-fondo: #EDE8DF;
+  --color-superficie: #F8F4EC;
+  --color-superficie-clara: #FDF9F3;
+  --color-texto: #2C3338;
+  --color-texto-suave: #6B7280;
+  --color-borde: #D4C9BC;
+  --color-error-fondo: #F0E4DF;
+  --color-error-borde: #D4A99A;
+  --color-texto-sobre-primario: #F8F4EC;
+  --radio-md: 10px;
+  --sombra-suave: 0 1px 3px rgba(44, 51, 56, 0.08);
+  --ancho-max: 720px;
+
+  --mat-sys-surface: #F8F4EC;
+  --mat-sys-surface-container: #F3EDE3;
+  --mat-sys-surface-container-low: #EDE8DF;
+  --mat-sys-surface-container-high: #FDF9F3;
+}
+  
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+  
+  html,
+  body {
+    height: 100%;
+    margin: 0;
+  }
+  
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+    line-height: 1.5;
+  }
+  
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  .pagina {
+    width: 100%;
+    max-width: var(--ancho-max);
+    margin: 0 auto;
+    padding: 1.5rem 1rem 2.5rem;
+  }
+  
+  .tarjeta {
+    background: var(--color-superficie);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-md);
+    box-shadow: var(--sombra-suave);
+  }
+  
+  .snackbar-error {
+    --mdc-snackbar-container-color: #b42318;
+    --mdc-snackbar-supporting-text-color: #ffffff;
+    --mat-snack-bar-button-color: #ffffff;
+  }

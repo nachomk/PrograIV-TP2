@@ -1,0 +1,58 @@
+<section class="pagina">
+  <article class="tarjeta login__card">
+    <header class="login__header">
+      <h1 class="login__titulo">Iniciar sesión</h1>
+      <p class="login__subtitulo">Ingresá con tu correo o nombre de usuario</p>
+    </header>
+
+    <form [formGroup]="loginForm" (ngSubmit)="enviar()" class="login__form">
+      <mat-form-field appearance="outline" class="login__field">
+        <mat-label>Correo o usuario</mat-label>
+        <input
+          matInput
+          formControlName="identificador"
+          autocomplete="username"
+          placeholder="ejemplo@mail.com o tu_usuario"
+        />
+        @if (identificador?.hasError('required') && identificador?.touched) {
+          <mat-error>Este campo es obligatorio</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="login__field">
+        <mat-label>Contraseña</mat-label>
+        <input
+          matInput
+          type="password"
+          formControlName="clave"
+          autocomplete="current-password"
+        />
+        @if (clave?.hasError('required') && clave?.touched) {
+          <mat-error>La contraseña es obligatoria</mat-error>
+        }
+        @if (clave?.hasError('fortalezaClave') && clave?.touched) {
+          <mat-error>Mínimo 8 caracteres, una mayúscula y un número</mat-error>
+        }
+      </mat-form-field>
+
+      @if (mensajeError) {
+        <p class="login__error" role="alert">{{ mensajeError }}</p>
+      }
+
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        class="login__submit"
+        [disabled]="loginForm.invalid || cargando"
+      >
+        {{ cargando ? 'Ingresando...' : 'Ingresar' }}
+      </button>
+    </form>
+
+    <footer class="login__footer">
+      <span>¿No tenés cuenta?</span>
+      <a routerLink="/registro" class="login__link">Registrate</a>
+    </footer>
+  </article>
+</section>

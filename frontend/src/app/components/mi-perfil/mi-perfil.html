@@ -1,0 +1,52 @@
+<section class="pagina mi-perfil">
+  @if (sesion$ | async; as usuario) {
+    <article class="tarjeta mi-perfil__card">
+      <header class="mi-perfil__encabezado">
+        <div class="mi-perfil__avatar">
+          @if (usuario.imagenPerfilUrl) {
+            <img
+              [src]="usuario.imagenPerfilUrl"
+              [alt]="'Foto de perfil de ' + usuario.nombre"
+              class="mi-perfil__avatar-img"
+            />
+          } @else {
+            <span aria-hidden="true">
+              {{ usuario.nombre.charAt(0) }}{{ usuario.apellido.charAt(0) }}
+            </span>
+          }
+        </div>
+        <div>
+          <h1 class="mi-perfil__titulo">{{ usuario.nombre }} {{ usuario.apellido }}</h1>
+          <p class="mi-perfil__usuario">@{{ usuario.nombreUsuario }}</p>
+        </div>
+      </header>
+
+      <dl class="mi-perfil__datos">
+        <div class="mi-perfil__fila">
+          <dt>Correo</dt>
+          <dd>{{ usuario.correo }}</dd>
+        </div>
+        <div class="mi-perfil__fila">
+          <dt>Perfil</dt>
+          <dd>{{ usuario.perfil }}</dd>
+        </div>
+        <div class="mi-perfil__fila">
+          <dt>Descripción</dt>
+          <dd>{{ usuario.descripcion }}</dd>
+        </div>
+      </dl>
+
+      <p class="mi-perfil__aviso">
+        Las últimas publicaciones se mostrarán acá en la Sprint #2.
+      </p>
+    </article>
+  } @else {
+    <article class="tarjeta mi-perfil__card mi-perfil__card--vacio">
+      <h1 class="mi-perfil__titulo">Mi perfil</h1>
+      <p class="mi-perfil__texto">
+        Iniciá sesión para ver tus datos.
+      </p>
+      <a mat-flat-button color="primary" routerLink="/login">Iniciar sesión</a>
+    </article>
+  }
+</section>

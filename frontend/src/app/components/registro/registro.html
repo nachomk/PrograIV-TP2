@@ -1,0 +1,145 @@
+<section class="pagina">
+    <article class="tarjeta registro__card">
+      <header class="registro__header">
+        <h1 class="registro__titulo">Crear cuenta</h1>
+        <p class="registro__subtitulo">Completá tus datos para unirte a EntreNos</p>
+      </header>
+  
+      <form [formGroup]="registroForm" (ngSubmit)="enviar()" class="registro__form">
+        <div class="registro__fila">
+          <mat-form-field appearance="outline" class="registro__field">
+            <mat-label>Nombre</mat-label>
+            <input matInput formControlName="nombre" autocomplete="given-name" maxlength="30" />
+            @if (nombre?.hasError('required') && nombre?.touched) {
+              <mat-error>El nombre es obligatorio</mat-error>
+            }
+            @if (nombre?.hasError('minlength') && nombre?.touched) {
+              <mat-error>Mínimo 2 caracteres</mat-error>
+            }
+          </mat-form-field>
+  
+          <mat-form-field appearance="outline" class="registro__field">
+            <mat-label>Apellido</mat-label>
+            <input matInput formControlName="apellido" autocomplete="family-name" maxlength="30" />
+            @if (apellido?.hasError('required') && apellido?.touched) {
+              <mat-error>El apellido es obligatorio</mat-error>
+            }
+            @if (apellido?.hasError('minlength') && apellido?.touched) {
+              <mat-error>Mínimo 2 caracteres</mat-error>
+            }
+          </mat-form-field>
+        </div>
+  
+        <mat-form-field appearance="outline" class="registro__field">
+          <mat-label>Correo electrónico</mat-label>
+          <input matInput type="email" formControlName="correo" autocomplete="email" maxlength="80" />
+          @if (correo?.hasError('required') && correo?.touched) {
+            <mat-error>El correo es obligatorio</mat-error>
+          }
+          @if (correo?.hasError('email') && correo?.touched) {
+            <mat-error>Formato de correo inválido</mat-error>
+          }
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline" class="registro__field">
+          <mat-label>Nombre de usuario</mat-label>
+          <input matInput formControlName="nombreUsuario" autocomplete="username" maxlength="20" />
+          @if (nombreUsuario?.hasError('required') && nombreUsuario?.touched) {
+            <mat-error>El usuario es obligatorio</mat-error>
+          }
+          @if (nombreUsuario?.hasError('minlength') && nombreUsuario?.touched) {
+            <mat-error>Mínimo 3 caracteres</mat-error>
+          }
+          @if (nombreUsuario?.hasError('pattern') && nombreUsuario?.touched) {
+            <mat-error>Solo letras, números y guión bajo</mat-error>
+          }
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline" class="registro__field">
+          <mat-label>Fecha de nacimiento</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="fechaNacimiento" />
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          @if (fechaNacimiento?.hasError('required') && fechaNacimiento?.touched) {
+            <mat-error>La fecha es obligatoria</mat-error>
+          }
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline" class="registro__field">
+          <mat-label>Descripción breve</mat-label>
+          <textarea
+            matInput
+            formControlName="descripcion"
+            rows="3"
+            maxlength="200"
+            placeholder="Contanos un poco sobre vos..."
+          ></textarea>
+          @if (descripcion?.hasError('required') && descripcion?.touched) {
+            <mat-error>La descripción es obligatoria</mat-error>
+          }
+          @if (descripcion?.hasError('maxlength') && descripcion?.touched) {
+            <mat-error>Máximo 200 caracteres</mat-error>
+          }
+        </mat-form-field>
+  
+        <div class="registro__fila">
+          <mat-form-field appearance="outline" class="registro__field">
+            <mat-label>Contraseña</mat-label>
+            <input matInput type="password" formControlName="clave" autocomplete="new-password" />
+            @if (clave?.hasError('required') && clave?.touched) {
+              <mat-error>La contraseña es obligatoria</mat-error>
+            }
+            @if (clave?.hasError('fortalezaClave') && clave?.touched) {
+              <mat-error>Mínimo 8 caracteres, una mayúscula y un número</mat-error>
+            }
+          </mat-form-field>
+  
+          <mat-form-field appearance="outline" class="registro__field">
+            <mat-label>Repetir contraseña</mat-label>
+            <input matInput type="password" formControlName="repetirClave" autocomplete="new-password" />
+            @if (repetirClave?.hasError('required') && repetirClave?.touched) {
+              <mat-error>Debés repetir la contraseña</mat-error>
+            }
+            @if (repetirClave?.hasError('clavesDistintas') && repetirClave?.touched) {
+              <mat-error>Las contraseñas no coinciden</mat-error>
+            }
+          </mat-form-field>
+        </div>
+  
+        <div class="registro__archivo">
+          <label class="registro__archivo-label" for="imagenPerfil">
+            Foto de perfil <span class="registro__opcional">(opcional)</span>
+          </label>
+          <input
+            id="imagenPerfil"
+            type="file"
+            accept="image/*"
+            class="registro__archivo-input"
+            (change)="onImagenSeleccionada($event)"
+          />
+          @if (nombreArchivo) {
+            <span class="registro__archivo-nombre">{{ nombreArchivo }}</span>
+          }
+        </div>
+  
+        @if (mensajeError) {
+          <p class="registro__error" role="alert">{{ mensajeError }}</p>
+        }
+  
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          class="registro__submit"
+          [disabled]="registroForm.invalid || cargando"
+        >
+          {{ cargando ? 'Creando cuenta...' : 'Crear cuenta' }}
+        </button>
+      </form>
+  
+      <footer class="registro__footer">
+        <span>¿Ya tenés cuenta?</span>
+        <a routerLink="/login" class="registro__link">Iniciá sesión</a>
+      </footer>
+    </article>
+  </section>

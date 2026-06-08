@@ -1,0 +1,46 @@
+.publicaciones__encabezado {
+    margin-bottom: 1.25rem;
+  }
+  
+  .publicaciones__titulo {
+    margin: 0 0 0.35rem;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.75rem;
+    color: var(--color-texto);
+  }
+  
+  .publicaciones__subtitulo {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--color-texto-suave);
+  }
+  
+  .publicaciones__vacio {
+    padding: 2rem 1.75rem;
+    text-align: center;
+  }
+  
+  .publicaciones__vacio-texto {
+    margin: 0 0 0.5rem;
+    font-size: 1.05rem;
+    color: var(--color-texto);
+  }
+  
+  .publicaciones__vacio-detalle {
+    margin: 0 0 1.25rem;
+    font-size: 0.9rem;
+    color: var(--color-texto-suave);
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  @media (max-width: 480px) {
+    .publicaciones__titulo {
+      font-size: 1.5rem;
+    }
+  
+    .publicaciones__vacio {
+      padding: 1.5rem 1.25rem;
+    }
+  }
