@@ -9,7 +9,7 @@ import {
   import { Usuario } from '../usuarios/entities/usuario.entity';
   import { RegistroDto } from './dto/registro.dto';
   import { LoginDto } from './dto/login.dto';
-import { StorageService } from 'src/storage/storage.service';
+  import { StorageService } from '../storage/storage.service';
   
   @Injectable()
   export class AuthService {
