@@ -2,11 +2,10 @@ import { BadRequestException, ConflictException, ForbiddenException, Injectable,
 import { InjectModel } from '@nestjs/mongoose';
 import { Publicacion } from './entities/publicacion.entity';
 import { Model, Types } from 'mongoose';
-import { Usuario } from 'src/usuarios/entities/usuario.entity';
+import { Usuario } from '../usuarios/entities/usuario.entity';
 import { CreatePublicacionDto } from './dto/create-publicacion.dto';
 import { ListarPublicacionesDto, OrdenPublicaciones } from './dto/listar-publicaciones.dto';
-import { StorageService } from 'src/storage/storage.service';
-
+import { StorageService } from '../storage/storage.service';
 @Injectable()
 export class PublicacionesService {
   constructor (
