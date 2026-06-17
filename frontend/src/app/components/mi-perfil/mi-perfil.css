@@ -68,14 +68,14 @@
   border-bottom: none;
 }
 
-.mi-perfil__fila dt {
+.mi-perfil__etiqueta {
   margin: 0;
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--color-texto-suave);
 }
 
-.mi-perfil__fila dd {
+.mi-perfil__valor {
   margin: 0;
   font-size: 0.95rem;
   color: var(--color-texto);
@@ -103,4 +103,28 @@
     flex-direction: column;
     text-align: center;
   }
+}
+
+.mi-perfil__publicaciones {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--color-borde);
+}
+
+.mi-perfil__subtitulo {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+  color: var(--color-texto);
+}
+
+.mi-perfil__estado,
+.mi-perfil__vacio,
+.mi-perfil__error {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-texto-suave);
+}
+
+.mi-perfil__error {
+  color: var(--color-error, #b00020);
 }

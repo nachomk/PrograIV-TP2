@@ -21,24 +21,49 @@
         </div>
       </header>
 
-      <dl class="mi-perfil__datos">
+      <div class="mi-perfil__datos">
         <div class="mi-perfil__fila">
-          <dt>Correo</dt>
-          <dd>{{ usuario.correo }}</dd>
+          <span class="mi-perfil__etiqueta">Correo</span>
+          <span class="mi-perfil__valor">{{ usuario.correo }}</span>
         </div>
         <div class="mi-perfil__fila">
-          <dt>Perfil</dt>
-          <dd>{{ usuario.perfil }}</dd>
+          <span class="mi-perfil__etiqueta">Perfil</span>
+          <span class="mi-perfil__valor">{{ usuario.perfil }}</span>
         </div>
         <div class="mi-perfil__fila">
-          <dt>Descripción</dt>
-          <dd>{{ usuario.descripcion }}</dd>
+          <span class="mi-perfil__etiqueta">Descripción</span>
+          <span class="mi-perfil__valor">{{ usuario.descripcion }}</span>
         </div>
-      </dl>
+      </div>
 
-      <p class="mi-perfil__aviso">
-        Las últimas publicaciones se mostrarán acá en la Sprint #2.
-      </p>
+      <section class="mi-perfil__publicaciones">
+        <h2 class="mi-perfil__subtitulo">Últimas publicaciones</h2>
+      
+        @if (cargandoPublicaciones) {
+          <p class="mi-perfil__estado">Cargando publicaciones...</p>
+        }
+      
+        @if (errorPublicaciones) {
+          <p class="mi-perfil__error" role="alert">{{ errorPublicaciones }}</p>
+        }
+      
+        @if (!cargandoPublicaciones && !errorPublicaciones && publicaciones.length === 0) {
+          <p class="mi-perfil__vacio">Todavía no publicaste nada.</p>
+        }
+      
+        @if (!cargandoPublicaciones && publicaciones.length > 0) {
+          @for (pub of publicaciones; track pub.id) {
+            <app-publicacion-card
+              [publicacion]="pub"
+              [usuarioId]="usuario.id ?? null"
+              [dioLike]="likesDados.has(pub.id)"
+              (actualizada)="onActualizada($event)"
+              (eliminada)="onEliminada($event)"
+              (dioLikeChange)="onLikeChange(pub.id, $event)"
+            />
+          }
+        }
+      </section>
     </article>
   } @else {
     <article class="tarjeta mi-perfil__card mi-perfil__card--vacio">

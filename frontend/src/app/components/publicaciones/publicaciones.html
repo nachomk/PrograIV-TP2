@@ -4,15 +4,187 @@
     <p class="publicaciones__subtitulo">Novedades de la comunidad EntreNos</p>
   </header>
 
-  <article class="tarjeta publicaciones__vacio">
-    <p class="publicaciones__vacio-texto">
-      Todavía no hay publicaciones para mostrar.
-    </p>
-    <p class="publicaciones__vacio-detalle">
-      En la próxima entrega vas a ver el feed con paginación, me gusta y comentarios.
-    </p>
-    <a mat-stroked-button color="primary" routerLink="/mi-perfil">
-      Ir a mi perfil
-    </a>
-  </article>
+  @if (sesion$ | async; as usuario) {
+    <div class="publicaciones__acciones-superiores">
+      <button
+        mat-flat-button
+        color="primary"
+        type="button"
+        (click)="toggleFormulario()"
+      >
+        {{ mostrarFormulario ? 'Cancelar' : 'Nueva publicación' }}
+      </button>
+    </div>
+
+    @if (mostrarFormulario) {
+      <article class="tarjeta publicaciones__formulario">
+        <h2 class="publicaciones__formulario-titulo">Crear publicación</h2>
+
+        <form
+          [formGroup]="crearForm"
+          (ngSubmit)="crearPublicacion(usuario.id!)"
+          class="publicaciones__form"
+        >
+          <mat-form-field appearance="outline" class="publicaciones__field">
+            <mat-label>Título</mat-label>
+            <input
+              matInput
+              formControlName="titulo"
+              maxlength="100"
+              autocomplete="off"
+            />
+            @if (titulo?.hasError('required') && titulo?.touched) {
+              <mat-error>El título es obligatorio</mat-error>
+            }
+            @if (titulo?.hasError('maxlength') && titulo?.touched) {
+              <mat-error>Máximo 100 caracteres</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="publicaciones__field">
+            <mat-label>Descripción</mat-label>
+            <textarea
+              matInput
+              formControlName="descripcion"
+              rows="4"
+              maxlength="1000"
+            ></textarea>
+            @if (descripcion?.hasError('required') && descripcion?.touched) {
+              <mat-error>La descripción es obligatoria</mat-error>
+            }
+            @if (descripcion?.hasError('maxlength') && descripcion?.touched) {
+              <mat-error>Máximo 1000 caracteres</mat-error>
+            }
+          </mat-form-field>
+
+          <div class="publicaciones__archivo">
+            <label class="publicaciones__archivo-label" for="imagenPublicacion">
+              Imagen
+              <span class="publicaciones__opcional">(opcional, JPG/PNG/WEBP, máx. 2 MB)</span>
+            </label>
+            <input
+              id="imagenPublicacion"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              class="publicaciones__archivo-input"
+              (change)="onImagenSeleccionada($event)"
+            />
+            @if (nombreArchivo) {
+              <span class="publicaciones__archivo-nombre">{{ nombreArchivo }}</span>
+            }
+          </div>
+
+          @if (errorCreacion) {
+            <p class="publicaciones__error-creacion" role="alert">{{ errorCreacion }}</p>
+          }
+
+          <div class="publicaciones__form-acciones">
+            <button
+              mat-stroked-button
+              type="button"
+              (click)="toggleFormulario()"
+              [disabled]="creando"
+            >
+              Cancelar
+            </button>
+            <button
+              mat-flat-button
+              color="primary"
+              type="submit"
+              [disabled]="creando || crearForm.invalid"
+            >
+              {{ creando ? 'Publicando...' : 'Publicar' }}
+            </button>
+          </div>
+        </form>
+      </article>
+    }
+  }
+
+  <div class="publicaciones__toolbar">
+    <span class="publicaciones__toolbar-label">Ordenar por:</span>
+    <button
+      mat-stroked-button
+      type="button"
+      [class.publicaciones__orden--activo]="orden === 'fecha'"
+      (click)="cambiarOrden('fecha')"
+    >
+      Más recientes
+    </button>
+    <button
+      mat-stroked-button
+      type="button"
+      [class.publicaciones__orden--activo]="orden === 'likes'"
+      (click)="cambiarOrden('likes')"
+    >
+      Más me gusta
+    </button>
+  </div>
+
+  @if (cargando && publicaciones.length === 0) {
+    <p class="publicaciones__estado">Cargando publicaciones...</p>
+  }
+
+  @if (error) {
+    <p class="publicaciones__error" role="alert">{{ error }}</p>
+  }
+
+  @if (!cargando && !error && publicaciones.length === 0) {
+    <article class="tarjeta publicaciones__vacio">
+      <p class="publicaciones__vacio-texto">
+        Todavía no hay publicaciones para mostrar.
+      </p>
+      <p class="publicaciones__vacio-detalle">
+        Cuando alguien publique, vas a ver el feed acá.
+      </p>
+    </article>
+  }
+
+  @if (!cargando && !error && publicaciones.length > 0) {
+    @if (sesion$ | async; as usuario) {
+      @for (pub of publicaciones; track pub.id) {
+        <app-publicacion-card
+          [publicacion]="pub"
+          [usuarioId]="usuario.id ?? null"
+          [dioLike]="likesDados.has(pub.id)"
+          (actualizada)="onActualizada($event)"
+          (eliminada)="onEliminada($event)"
+          (dioLikeChange)="onLikeChange(pub.id, $event)"
+        />
+      }
+    } @else {
+      @for (pub of publicaciones; track pub.id) {
+        <app-publicacion-card
+          [publicacion]="pub"
+          [usuarioId]="null"
+          [dioLike]="likesDados.has(pub.id)"
+          (actualizada)="onActualizada($event)"
+          (eliminada)="onEliminada($event)"
+          (dioLikeChange)="onLikeChange(pub.id, $event)"
+        />
+      }
+    }
+
+    <nav class="publicaciones__paginacion" aria-label="Paginación">
+      <button
+        mat-stroked-button
+        type="button"
+        [disabled]="!hayAnterior"
+        (click)="paginaAnterior()"
+      >
+        Anterior
+      </button>
+      <span class="publicaciones__pagina-info">
+        Página {{ paginaActual }} de {{ totalPaginas }}
+      </span>
+      <button
+        mat-stroked-button
+        type="button"
+        [disabled]="!haySiguiente"
+        (click)="paginaSiguiente()"
+      >
+        Siguiente
+      </button>
+    </nav>
+  }
 </section>

@@ -1,0 +1,30 @@
+<article class="tarjeta publicacion-card">
+    <header class="publicacion-card__encabezado">
+        <h2 class="publicacion-card__titulo">{{ publicacion.titulo }}</h2>
+        @if (publicacion.fechaCreacion) {
+        <time class="publicacion-card__fecha" [dateTime]="publicacion.fechaCreacion">
+            {{ formatearFecha(publicacion.fechaCreacion) }}
+        </time>
+        }
+    </header>
+
+    <p class="publicacion-card__descripcion">{{ publicacion.descripcion }}</p>
+
+    @if (publicacion.imagenUrl) {
+    <img [src]="publicacion.imagenUrl" [alt]="'Imagen de ' + publicacion.titulo" class="publicacion-card__imagen" />
+    }
+
+    <footer class="publicacion-card__acciones">
+        <button mat-stroked-button type="button" class="publicacion-card__like" [disabled]="!usuarioId || cargandoLike"
+            (click)="toggleLike()">
+            {{ dioLike ? 'Quitar me gusta' : 'Me gusta' }}
+            ({{ publicacion.cantidadMeGusta }})
+        </button>
+
+        @if (esAutor) {
+        <button mat-button color="warn" type="button" [disabled]="cargandoEliminar" (click)="eliminar()">
+            {{ cargandoEliminar ? 'Eliminando...' : 'Eliminar' }}
+        </button>
+        }
+    </footer>
+</article>
