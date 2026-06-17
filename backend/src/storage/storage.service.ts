@@ -41,4 +41,30 @@ export class StorageService {
 
     return data.publicUrl;
   }
+
+  async subirImagenPublicacion(archivo: Express.Multer.File, prefijo: string): Promise<string> {
+    const extension = archivo.originalname.split('.').pop()?.toLowerCase() ?? 'jpg'
+    const ruta = `publicaciones/${prefijo}-${Date.now()}.${extension}`
+
+    const { error } = await this.supabase.storage
+      .from(this.bucket)
+      .upload(ruta, archivo.buffer, {
+        contentType: archivo.mimetype,
+        upsert: false
+    })
+
+    if(error) {
+      console.error('Supabase error:', error.message, error);
+      throw new InternalServerErrorException(
+        'No se pudo subir la imagen de la publicacion'
+      )
+    }
+
+    const { data } = this.supabase.storage
+      .from(this.bucket)
+      .getPublicUrl(ruta)
+    
+    return data.publicUrl
+  }
+
 }

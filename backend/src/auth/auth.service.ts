@@ -48,7 +48,7 @@ import {
           descripcion: dto.descripcion,
           clave: claveEncriptada,
           imagenPerfilUrl,
-          perfil: 'usuario',
+          perfil: 'usuario', // TODO: VISTA ADMIN
         });
       
         return this.respuestaSinClave(usuarioCreado);
