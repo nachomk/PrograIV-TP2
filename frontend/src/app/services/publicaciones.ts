@@ -26,21 +26,13 @@ export class Publicaciones {
         return this.http.post<Publicacion>(this.apiUrl, formData)
     }
 
-    darMeGusta(publicacionId: string, usuarioId: string): Observable<Publicacion> {
-        return this.http.post<Publicacion>(`${this.apiUrl}/${publicacionId}/like`, {
-            usuarioId
-        })
+    darMeGusta(publicacionId: string): Observable<Publicacion> {
+        return this.http.post<Publicacion>(`${this.apiUrl}/${publicacionId}/like`, {});
     }
-
-    quitarMeGusta(publicacionId: string, usuarioId: string): Observable<Publicacion> {
-        return this.http.delete<Publicacion>(`${this.apiUrl}/${publicacionId}/like`, {
-          body: { usuarioId },
-        });
+    quitarMeGusta(publicacionId: string): Observable<Publicacion> {
+        return this.http.delete<Publicacion>(`${this.apiUrl}/${publicacionId}/like`);
     }
-
-    eliminar(publicacionId: string, usuarioId: string): Observable<Publicacion> {
-        return this.http.delete<Publicacion>(`${this.apiUrl}/${publicacionId}`, {
-          body: { usuarioId },
-        });
+    eliminar(publicacionId: string): Observable<Publicacion> {
+        return this.http.delete<Publicacion>(`${this.apiUrl}/${publicacionId}`);
     }
 }

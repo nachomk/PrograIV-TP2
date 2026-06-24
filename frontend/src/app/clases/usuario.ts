@@ -9,4 +9,5 @@ export interface Usuario {
   descripcion: string;
   imagenPerfilUrl?: string;
   perfil: PerfilUsuario;
+  expiraEn?: string;
 }

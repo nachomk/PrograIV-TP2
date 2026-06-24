@@ -116,7 +116,7 @@ export class Registro {
       next: () => {
         this.cargando = false;
         this.cdr.detectChanges();
-        this.router.navigate(['/login']);
+        this.router.navigate(['/publicaciones']);
       },
       error: () => {
         this.cargando = false;

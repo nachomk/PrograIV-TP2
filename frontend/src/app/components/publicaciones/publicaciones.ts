@@ -117,7 +117,7 @@ export class Publicaciones implements OnInit {
     this.cdr.detectChanges();
   }
 
-  protected crearPublicacion(usuarioId: string): void {
+  protected crearPublicacion(): void {
     this.errorCreacion = null;
     this.crearForm.markAllAsTouched();
 
@@ -129,7 +129,6 @@ export class Publicaciones implements OnInit {
     const formData = new FormData();
     formData.append('titulo', v.titulo!);
     formData.append('descripcion', v.descripcion!);
-    formData.append('usuarioId', usuarioId);
 
     if (this.imagenSeleccionada) {
       formData.append('imagenPublicacion', this.imagenSeleccionada);

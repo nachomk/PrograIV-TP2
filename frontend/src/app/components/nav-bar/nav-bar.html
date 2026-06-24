@@ -1,3 +1,12 @@
+@if (alertaExpiracion$ | async) {
+  <div class="nav-bar__alerta" role="alert">
+    Tu sesión expira en {{ segundosRestantes$ | async }} s
+    <button mat-stroked-button type="button" (click)="renovarSesion()">
+      Renovar sesión
+    </button>
+  </div>
+}
+
 <header class="nav-bar">
     <div class="nav-bar__contenedor pagina">
       <a routerLink="/publicaciones" class="nav-bar__marca">EntreNos</a>

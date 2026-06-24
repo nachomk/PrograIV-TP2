@@ -55,3 +55,16 @@
       justify-content: center;
     }
   }
+
+  .nav-bar__alerta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    background: #fff3e0;
+    color: #e65100;
+    font-weight: 500;
+    border-bottom: 1px solid #ffcc80;
+  }

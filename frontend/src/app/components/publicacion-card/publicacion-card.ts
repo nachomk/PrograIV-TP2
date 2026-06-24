@@ -33,8 +33,8 @@ export class PublicacionCard {
 
     this.cargandoLike = true
     const peticion = this.dioLike
-      ? this.publicacionesService.quitarMeGusta(this.publicacion.id, this.usuarioId)
-      : this.publicacionesService.darMeGusta(this.publicacion.id, this.usuarioId)
+      ? this.publicacionesService.quitarMeGusta(this.publicacion.id)
+      : this.publicacionesService.darMeGusta(this.publicacion.id);
     
     peticion.subscribe({
       next: (res) => {
@@ -55,8 +55,7 @@ export class PublicacionCard {
     if (!this.usuarioId || !this.esAutor || this.cargandoEliminar) return
 
     this.cargandoEliminar = true
-    this.publicacionesService
-      .eliminar(this.publicacion.id, this.usuarioId)
+    this.publicacionesService.eliminar(this.publicacion.id)
       .subscribe({
         next: () => {
           this.cargandoEliminar = false;
