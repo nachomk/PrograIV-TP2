@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Publicacion, PublicacionSchema } from './entities/publicacion.entity';
 import { UsuariosModule } from '../usuarios/usuarios.module';
 import { StorageModule } from '../storage/storage.module';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
@@ -12,7 +13,8 @@ import { StorageModule } from '../storage/storage.module';
       { name: Publicacion.name, schema: PublicacionSchema}
     ]),
     UsuariosModule,
-    StorageModule
+    StorageModule,
+    AuthModule
   ],
   controllers: [PublicacionesController],
   providers: [PublicacionesService],

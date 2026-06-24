@@ -14,8 +14,8 @@ export class PublicacionesService {
     private readonly storageService: StorageService
   ) {}
 
-  async crear(dto: CreatePublicacionDto, imagen?: Express.Multer.File) {
-    const autorExiste = await this.usuarioModel.exists({ _id: dto.usuarioId })
+  async crear(dto: CreatePublicacionDto, usuarioId: string, imagen?: Express.Multer.File) {
+    const autorExiste = await this.usuarioModel.exists({ _id: usuarioId });
 
     if(!autorExiste) {
       throw new NotFoundException('Usuario no encontrado')
@@ -23,13 +23,13 @@ export class PublicacionesService {
 
     let imagenUrl = ''
     if(imagen) {
-      imagenUrl = await this.storageService.subirImagenPublicacion(imagen, dto.usuarioId)
+      imagenUrl = await this.storageService.subirImagenPublicacion(imagen, usuarioId);
     }
 
     const publicacion = await this.publicacionModel.create({
       titulo: dto.titulo,
       descripcion: dto.descripcion,
-      autor: dto.usuarioId,
+      autor: usuarioId,
       imagenUrl,
       meGusta: [],
       activa: true

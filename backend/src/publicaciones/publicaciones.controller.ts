@@ -1,9 +1,10 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
+
+import { BadRequestException, Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Query, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { PublicacionesService } from './publicaciones.service';
 import { CreatePublicacionDto } from './dto/create-publicacion.dto';
 import { ListarPublicacionesDto } from './dto/listar-publicaciones.dto';
-import { MeGustaDto } from './dto/me-gusta.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
 
 @Controller('publicaciones')
 export class PublicacionesController {
@@ -11,6 +12,7 @@ export class PublicacionesController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @UseGuards(AuthGuard)
   @UseInterceptors(
     FileInterceptor('imagenPublicacion', {
       limits: { fileSize: 2 * 1024 * 1024 },
@@ -28,26 +30,30 @@ export class PublicacionesController {
   )
   crear(
     @Body() dto: CreatePublicacionDto,
-    @UploadedFile() imagen?: Express.Multer.File,
+    @UploadedFile() imagen: Express.Multer.File | undefined,
+    @Req() req: Request,
   ) {
-    return this.publicacionesService.crear(dto, imagen);
+    return this.publicacionesService.crear(dto, req['user'].sub, imagen);
   }
   
   @Post(':id/like')
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
-  darMeGusta (@Param('id') id: string, @Body() dto: MeGustaDto) {
-    return this.publicacionesService.darMeGusta(id, dto.usuarioId)
+  darMeGusta(@Param('id') id: string, @Req() req: Request) {
+    return this.publicacionesService.darMeGusta(id, req['user'].sub);
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
-  eliminar(@Param('id') id: string, @Body() dto: MeGustaDto) {
-    return this.publicacionesService.eliminar(id, dto.usuarioId);
+  eliminar(@Param('id') id: string, @Req() req: Request) {
+    return this.publicacionesService.eliminar(id, req['user'].sub);
   }
 
   @Delete(':id/like')
-  quitarMeGusta(@Param('id') id: string, @Body() dto: MeGustaDto) {
-    return this.publicacionesService.quitarMeGusta(id, dto.usuarioId)
+  @UseGuards(AuthGuard)
+  quitarMeGusta(@Param('id') id: string, @Req() req: Request) {
+    return this.publicacionesService.quitarMeGusta(id, req['user'].sub);
   }
 
   @Get()
