@@ -56,6 +56,11 @@ export class PublicacionesController {
     return this.publicacionesService.quitarMeGusta(id, req['user'].sub);
   }
 
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.publicacionesService.findOne(id);
+  }
+
   @Get()
   findAll(@Query() dto: ListarPublicacionesDto) {
     return this.publicacionesService.findAll(dto);

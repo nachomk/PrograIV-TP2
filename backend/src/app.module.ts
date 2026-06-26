@@ -7,6 +7,7 @@ import { UsuariosModule } from './usuarios/usuarios.module';
 import { AuthModule } from './auth/auth.module';
 import { PublicacionesModule } from './publicaciones/publicaciones-module';
 import { StorageModule } from './storage/storage.module';
+import { ComentariosModule } from './comentarios/comentarios.module';
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import { StorageModule } from './storage/storage.module';
     UsuariosModule,
     AuthModule,
     PublicacionesModule,
-    StorageModule
+    StorageModule,
+    ComentariosModule
   ],
   controllers: [AppController],
   providers: [AppService],

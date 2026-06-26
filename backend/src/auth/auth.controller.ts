@@ -85,21 +85,22 @@ import {
     @Post('logout')
     @HttpCode(HttpStatus.OK)
     logout(@Res({ passthrough: true }) res: Response) {
+      const esProd = process.env.NODE_ENV === 'production';
       res.clearCookie('access_token', {
         httpOnly: true,
-        sameSite: 'lax',
-        secure: process.env.NODE_ENV === 'production',
+        sameSite: esProd ? 'none' : 'lax',
+        secure: esProd,
       });
       return { mensaje: 'Sesión cerrada.' };
     }
   
     private setTokenCookie(res: Response, token: string) {
-      const maxAgeMs = 40 * 1000;   
-      
+      const esProd = process.env.NODE_ENV === 'production';
+      const maxAgeMs = 40 * 1000;
       res.cookie('access_token', token, {
         httpOnly: true,
-        sameSite: 'lax',
-        secure: process.env.NODE_ENV === 'production',
+        sameSite: esProd ? 'none' : 'lax',
+        secure: esProd,
         maxAge: maxAgeMs,
       });
     }

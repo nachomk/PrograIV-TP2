@@ -6,12 +6,14 @@ import { Usuario } from '../usuarios/entities/usuario.entity';
 import { CreatePublicacionDto } from './dto/create-publicacion.dto';
 import { ListarPublicacionesDto, OrdenPublicaciones } from './dto/listar-publicaciones.dto';
 import { StorageService } from '../storage/storage.service';
+import { Comentario } from 'src/comentarios/entities/comentario.entity';
 @Injectable()
 export class PublicacionesService {
   constructor (
     @InjectModel(Publicacion.name) private readonly publicacionModel: Model<Publicacion>,
     @InjectModel(Usuario.name) private readonly usuarioModel: Model<Usuario>,
-    private readonly storageService: StorageService
+    private readonly storageService: StorageService,
+    @InjectModel(Comentario.name) private readonly comentarioModel: Model<Comentario>,
   ) {}
 
   async crear(dto: CreatePublicacionDto, usuarioId: string, imagen?: Express.Multer.File) {
@@ -38,7 +40,10 @@ export class PublicacionesService {
     return this.formatearPublicacion(publicacion)
   }
 
-  private formatearPublicacion(publicacion: Publicacion & { _id; createdAt?: Date}) {
+  private formatearPublicacion(
+    publicacion: Publicacion & { _id; createdAt?: Date },
+    cantidadComentarios = 0,
+  ) {
     return {
       id: publicacion._id.toString(),
       titulo: publicacion.titulo,
@@ -46,9 +51,16 @@ export class PublicacionesService {
       imagenUrl: publicacion.imagenUrl,
       autorId: publicacion.autor.toString(),
       cantidadMeGusta: publicacion.meGusta.length,
+      cantidadComentarios,
       activa: publicacion.activa,
-      fechaCreacion: publicacion.createdAt?.toISOString() ?? null
-    }
+      fechaCreacion: publicacion.createdAt?.toISOString() ?? null,
+    };
+  }
+
+  private async contarComentarios(publicacionId: string): Promise<number> {
+    return this.comentarioModel.countDocuments({
+      publicacion: publicacionId,
+    });
   }
 
   async findAll(dto: ListarPublicacionesDto) {
@@ -86,12 +98,33 @@ export class PublicacionesService {
         .limit(limit)
         .lean();
     }
+    const datos = await Promise.all(
+      publicaciones.map(async (p) => {
+        const cantidadComentarios = await this.contarComentarios(p._id.toString());
+        return this.formatearPublicacion(p, cantidadComentarios);
+      }),
+    );
     return {
-      datos: publicaciones.map((p) => this.formatearPublicacion(p)),
+      datos,
       total,
       offset,
-      limit
+      limit,
+    };
+  }
+
+  async findOne(publicacionId: string) {
+    this.validarObjectId(publicacionId, 'publicacion');
+    const publicacion = await this.publicacionModel.findOne({
+      _id: publicacionId,
+      activa: true,
+    });
+    if (!publicacion) {
+      throw new NotFoundException('Publicación no encontrada.');
     }
+
+    const cantidadComentarios = await this.contarComentarios(publicacionId);
+
+    return this.formatearPublicacion(publicacion, cantidadComentarios);
   }
 
   async darMeGusta(publicacionId: string, usuarioId: string) {
@@ -123,7 +156,8 @@ export class PublicacionesService {
     publicacion.meGusta.push(new Types.ObjectId(usuarioId))
     await publicacion.save()
 
-    return this.formatearPublicacion(publicacion)
+    const cantidadComentarios = await this.contarComentarios(publicacionId);
+    return this.formatearPublicacion(publicacion, cantidadComentarios);
   }
 
   async quitarMeGusta(publicacionId: string, usuarioId: string) {
@@ -150,7 +184,8 @@ export class PublicacionesService {
     publicacion.meGusta.splice(indice, 1)
     await publicacion.save()
 
-    return this.formatearPublicacion(publicacion)
+    const cantidadComentarios = await this.contarComentarios(publicacionId);
+    return this.formatearPublicacion(publicacion, cantidadComentarios);
   }
   
   async eliminar (publicacionId: string, usuarioId: string) {
