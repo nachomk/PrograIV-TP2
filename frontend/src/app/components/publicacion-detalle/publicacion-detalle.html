@@ -1,0 +1,134 @@
+<section class="pagina publicacion-detalle">
+    <a mat-button routerLink="/publicaciones" class="publicacion-detalle__volver">
+        ← Volver al feed
+    </a>
+
+    @if (cargandoPublicacion) {
+    <p class="publicacion-detalle__estado">Cargando publicación...</p>
+    }
+
+    @if (errorPublicacion) {
+    <p class="publicacion-detalle__error" role="alert">{{ errorPublicacion }}</p>
+    }
+
+    @if (publicacion; as pub) {
+    <article class="tarjeta publicacion-detalle__publicacion">
+        <header class="publicacion-detalle__encabezado">
+            <h1 class="publicacion-detalle__titulo">{{ pub.titulo }}</h1>
+            @if (pub.fechaCreacion) {
+            <time class="publicacion-detalle__fecha" [dateTime]="pub.fechaCreacion">
+                {{ formatearFecha(pub.fechaCreacion) }}
+            </time>
+            }
+        </header>
+
+        <p class="publicacion-detalle__descripcion">{{ pub.descripcion }}</p>
+
+        @if (pub.imagenUrl) {
+        <img [src]="pub.imagenUrl" [alt]="'Imagen de ' + pub.titulo" class="publicacion-detalle__imagen" />
+        }
+
+        <p class="publicacion-detalle__likes">
+            {{ pub.cantidadMeGusta }} me gusta
+        </p>
+    </article>
+
+    <section class="tarjeta publicacion-detalle__comentarios">
+        <h2 class="publicacion-detalle__comentarios-titulo">Comentarios</h2>
+
+        @if (sesion$ | async; as usuario) {
+        <form [formGroup]="crearComentarioForm" (ngSubmit)="crearComentario()"
+            class="publicacion-detalle__form-comentario">
+            <mat-form-field appearance="outline" class="publicacion-detalle__field">
+                <mat-label>Escribí un comentario</mat-label>
+                <textarea matInput formControlName="texto" rows="3" maxlength="500"></textarea>
+                @if (crearComentarioForm.get('texto')?.hasError('required') &&
+                crearComentarioForm.get('texto')?.touched) {
+                <mat-error>El comentario es obligatorio</mat-error>
+                }
+            </mat-form-field>
+
+            @if (errorCreacion) {
+            <p class="publicacion-detalle__error" role="alert">{{ errorCreacion }}</p>
+            }
+
+            <button mat-flat-button color="primary" type="submit" [disabled]="creandoComentario">
+                {{ creandoComentario ? 'Publicando...' : 'Comentar' }}
+            </button>
+        </form>
+        }
+
+        @if (cargandoComentarios && comentarios.length === 0) {
+        <p class="publicacion-detalle__estado">Cargando comentarios...</p>
+        }
+
+        @if (errorComentarios) {
+        <p class="publicacion-detalle__error" role="alert">{{ errorComentarios }}</p>
+        }
+
+        @if (comentarios.length === 0 && !cargandoComentarios) {
+        <p class="publicacion-detalle__vacio">Todavía no hay comentarios.</p>
+        }
+
+        <ul class="publicacion-detalle__lista">
+            @for (comentario of comentarios; track comentario.id) {
+            <li class="publicacion-detalle__item">
+                <header class="publicacion-detalle__item-encabezado">
+                    <span class="publicacion-detalle__autor">
+                        @if (sesion$ | async; as usuario) {
+                        {{ etiquetaAutor(comentario, usuario.id) }}
+                        }
+                    </span>
+                    @if (comentario.modificado) {
+                    <span class="publicacion-detalle__editado">Editado</span>
+                    }
+                    @if (comentario.fechaCreacion) {
+                    <time class="publicacion-detalle__fecha-comentario" [dateTime]="comentario.fechaCreacion">
+                        {{ formatearFecha(comentario.fechaCreacion) }}
+                    </time>
+                    }
+                </header>
+
+                @if (comentarioEditandoId === comentario.id) {
+                <form [formGroup]="editarComentarioForm" (ngSubmit)="guardarEdicion(comentario.id)"
+                    class="publicacion-detalle__form-edicion">
+                    <mat-form-field appearance="outline" class="publicacion-detalle__field">
+                        <mat-label>Editar comentario</mat-label>
+                        <textarea matInput formControlName="texto" rows="3" maxlength="500"></textarea>
+                    </mat-form-field>
+
+                    @if (errorEdicion) {
+                    <p class="publicacion-detalle__error" role="alert">{{ errorEdicion }}</p>
+                    }
+
+                    <div class="publicacion-detalle__acciones-edicion">
+                        <button mat-button type="button" (click)="cancelarEdicion()">Cancelar</button>
+                        <button mat-flat-button color="primary" type="submit" [disabled]="guardandoEdicion">
+                            {{ guardandoEdicion ? 'Guardando...' : 'Guardar' }}
+                        </button>
+                    </div>
+                </form>
+                } @else {
+                <p class="publicacion-detalle__texto">{{ comentario.texto }}</p>
+
+                @if (sesion$ | async; as usuario) {
+                @if (esAutorComentario(comentario, usuario.id)) {
+                <button mat-button type="button" (click)="iniciarEdicion(comentario)">
+                    Editar
+                </button>
+                }
+                }
+                }
+            </li>
+            }
+        </ul>
+
+        @if (hayMasComentarios) {
+        <button mat-stroked-button type="button" class="publicacion-detalle__cargar-mas"
+            [disabled]="cargandoComentarios" (click)="cargarMasComentarios()">
+            {{ cargandoComentarios ? 'Cargando...' : 'Cargar más comentarios' }}
+        </button>
+        }
+    </section>
+    }
+</section>

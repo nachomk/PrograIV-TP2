@@ -7,7 +7,7 @@ import {
   catchError,
   of,
 } from 'rxjs';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Usuario } from '../clases/usuario';
 import { environment } from '../../environments/environment';
 import { SessionModal } from '../components/session-modal.ts/session-modal';
@@ -20,16 +20,13 @@ export class Auth {
 
   private readonly sesionSubject = new BehaviorSubject<Usuario | null>(null);
   readonly sesion$ = this.sesionSubject.asObservable();
-  readonly alertaSesion$ = new BehaviorSubject<boolean>(false);
   readonly segundosRestantes$ = new BehaviorSubject<number | null>(null);
   
   private expiraEn: Date | null = null;
   private intervaloSesion: ReturnType<typeof setInterval> | null = null;
   private alertaMostrada = false;
+  private modalSesionRef: MatDialogRef<SessionModal> | null = null;
 
-  constructor() {
-    this.restaurarSesion().subscribe();
-  }
 
   login(identificador: string, clave: string): Observable<Usuario> {
     return this.http
@@ -54,8 +51,10 @@ export class Auth {
       .post<{ mensaje: string }>(`${this.apiUrl}/auth/refrescar`, {})
       .pipe(
         tap(() => {
+          this.cerrarModalSesion();
           this.iniciarMonitoreoDesdeDuracion();
           this.alertaMostrada = false;
+          this.segundosRestantes$.next(null);
         }),
       );
   }
@@ -91,9 +90,11 @@ export class Auth {
   }
 
   private limpiarSesion(): void {
+    this.cerrarModalSesion();
     this.detenerMonitoreo();
     this.sesionSubject.next(null);
     this.alertaMostrada = false;
+    this.segundosRestantes$.next(null);
   }
 
   private iniciarMonitoreoDesdeDuracion(): void {
@@ -113,33 +114,40 @@ export class Auth {
       const msRestantes = this.expiraEn.getTime() - Date.now();
       const segRestantes = Math.max(0, Math.ceil(msRestantes / 1000));
       this.segundosRestantes$.next(segRestantes);
-      this.alertaSesion$.next(
-        segRestantes <= environment.jwtAlertaSegundos && segRestantes > 0,
-      );
       if (
         segRestantes <= environment.jwtAlertaSegundos &&
         segRestantes > 0 &&
         !this.alertaMostrada
       ) {
         this.alertaMostrada = true;
-        this.abrirModalExtension(segRestantes);
+        this.abrirModalExtension();
+      }
+      if (segRestantes === 0) {
+        this.cerrarModalSesion();
+        this.limpiarSesion();
       }
     }, 1000);
   }
 
-  private abrirModalExtension(segundosRestantes: number): void {
-    const ref = this.dialog.open(SessionModal, {
-      data: { segundosRestantes },
+  private abrirModalExtension(): void {
+    this.cerrarModalSesion();
+    this.modalSesionRef = this.dialog.open(SessionModal, {
       disableClose: true,
     });
-
-    ref.afterClosed().subscribe((extender) => {
+    this.modalSesionRef.afterClosed().subscribe((extender) => {
+      this.modalSesionRef = null;
       if (extender) {
         this.refrescar().subscribe({
           error: () => this.limpiarSesion(),
         });
       }
     });
+  }
+  private cerrarModalSesion(): void {
+    if (this.modalSesionRef) {
+      this.modalSesionRef.close();
+      this.modalSesionRef = null;
+    }
   }
 
   private detenerMonitoreo(): void {
@@ -148,5 +156,10 @@ export class Auth {
       this.intervaloSesion = null;
     }
     this.expiraEn = null;
+    this.segundosRestantes$.next(null);
+  }
+
+  limpiarSesionLocal(): void {
+    this.limpiarSesion();
   }
 }

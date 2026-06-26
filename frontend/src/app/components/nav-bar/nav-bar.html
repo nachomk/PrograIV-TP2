@@ -1,37 +1,28 @@
-@if (alertaExpiracion$ | async) {
-  <div class="nav-bar__alerta" role="alert">
-    Tu sesión expira en {{ segundosRestantes$ | async }} s
-    <button mat-stroked-button type="button" (click)="renovarSesion()">
-      Renovar sesión
-    </button>
-  </div>
-}
-
 <header class="nav-bar">
-    <div class="nav-bar__contenedor pagina">
-      <a routerLink="/publicaciones" class="nav-bar__marca">EntreNos</a>
-  
-      <nav class="nav-bar__links">
-        <a mat-button routerLink="/publicaciones" routerLinkActive="nav-bar__link--activo">
-          Publicaciones
-        </a>
-        <a mat-button routerLink="/mi-perfil" routerLinkActive="nav-bar__link--activo">
-          Mi perfil
-        </a>
-  
-        @if (sesion$ | async; as usuario) {
-          <span class="nav-bar__usuario">{{ usuario.nombre }}</span>
-          <button mat-stroked-button type="button" (click)="cerrarSesion()">
-            Salir
-          </button>
-        } @else {
-          <a mat-button routerLink="/login" routerLinkActive="nav-bar__link--activo">
-            Ingresar
-          </a>
-          <a mat-flat-button color="primary" routerLink="/registro">
-            Registrarse
-          </a>
-        }
-      </nav>
-    </div>
-  </header>
+  <div class="nav-bar__contenedor">
+    <a routerLink="/publicaciones" class="nav-bar__marca">EntreNos</a>
+
+    <nav class="nav-bar__links">
+      <a mat-button routerLink="/publicaciones" routerLinkActive="nav-bar__link--activo">
+        Publicaciones
+      </a>
+      <a mat-button routerLink="/mi-perfil" routerLinkActive="nav-bar__link--activo">
+        Mi perfil
+      </a>
+
+      @if (sesion$ | async; as usuario) {
+      <span class="nav-bar__usuario">{{ usuario.nombre }}</span>
+      <button mat-stroked-button type="button" (click)="cerrarSesion()">
+        Salir
+      </button>
+      } @else {
+      <a mat-button routerLink="/login" routerLinkActive="nav-bar__link--activo">
+        Ingresar
+      </a>
+      <a mat-flat-button color="primary" routerLink="/registro">
+        Registrarse
+      </a>
+      }
+    </nav>
+  </div>
+</header>

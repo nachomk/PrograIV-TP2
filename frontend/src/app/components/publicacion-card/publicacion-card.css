@@ -5,6 +5,8 @@
 
 .publicacion-card__encabezado {
     margin-bottom: 0.75rem;
+    min-width: 0;
+    overflow: hidden;
 }
 
 .publicacion-card__titulo {
@@ -12,6 +14,8 @@
     font-family: Georgia, 'Times New Roman', serif;
     font-size: 1.25rem;
     color: var(--color-texto);
+    min-width: 0;
+    max-width: 100%;
 }
 
 .publicacion-card__fecha {
@@ -48,8 +52,48 @@
     border-top: 1px solid var(--color-borde);
 }
 
-.publicacion-card__like {
-    min-width: 140px;
+.publicacion-card__acciones {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--color-borde);
+}
+
+.publicacion-card__reacciones {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.publicacion-card__like-icono {
+    font-size: 1.35rem;
+    line-height: 1;
+}
+
+.publicacion-card__like--activo .publicacion-card__like-icono {
+    color: var(--color-secundario);
+}
+
+.publicacion-card__like-contador {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-texto);
+    min-width: 1rem;
+    margin-right: 0.5rem;
+}
+
+.publicacion-card__comentarios {
+    font-size: 0.9rem;
+    color: var(--color-primario);
+    text-decoration: none;
+}
+
+.publicacion-card__comentarios:hover {
+    text-decoration: underline;
 }
 
 @media (max-width: 480px) {
@@ -61,4 +105,19 @@
         flex-direction: column;
         align-items: stretch;
     }
+}
+
+.publicacion-card__titulo-enlace {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+}
+
+.publicacion-card__titulo-enlace:hover {
+    color: var(--color-primario);
+    text-decoration: underline;
 }

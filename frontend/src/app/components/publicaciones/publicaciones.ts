@@ -211,7 +211,11 @@ export class Publicaciones implements OnInit {
   protected onActualizada(actualizada: Publicacion): void {
     const i = this.publicaciones.findIndex((p) => p.id === actualizada.id);
     if (i !== -1) {
-      this.publicaciones[i] = actualizada;
+      this.publicaciones[i] = {
+        ...actualizada,
+        cantidadComentarios:
+          actualizada.cantidadComentarios ?? this.publicaciones[i].cantidadComentarios ?? 0,
+      };
       this.cdr.detectChanges();
     }
   }

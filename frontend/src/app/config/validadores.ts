@@ -29,3 +29,11 @@ export function validarClavesIguales(
     return null;
   };
 }
+
+export function validarTextoNoVacio(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const valor = (control.value as string)?.trim();
+    if (!valor) return { textoVacio: true };
+    return null;
+  };
+}

@@ -1,0 +1,13 @@
+.cargando {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 120px);
+    gap: 1rem;
+}
+
+.cargando__texto {
+    margin: 0;
+    color: var(--color-texto-suave);
+}

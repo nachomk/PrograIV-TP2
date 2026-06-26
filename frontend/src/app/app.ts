@@ -8,6 +8,4 @@ import { NavBar } from './components/nav-bar/nav-bar';
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App {
-  title = 'EntreNos';
-}
+export class App {}

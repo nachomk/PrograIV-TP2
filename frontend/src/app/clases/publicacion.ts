@@ -9,6 +9,7 @@ export interface Publicacion {
   cantidadMeGusta: number;
   activa: boolean;
   fechaCreacion: string | null;
+  cantidadComentarios?: number;
 }
 
 export interface ListarPublicacionesParams {

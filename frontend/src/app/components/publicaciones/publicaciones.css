@@ -133,3 +133,20 @@
   font-size: 0.9rem;
   color: var(--color-texto-suave);
 }
+
+.publicaciones__encabezado {
+  margin-bottom: 1.25rem;
+}
+
+.publicaciones__titulo {
+  margin: 0 0 0.35rem;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.75rem;
+  color: var(--color-texto);
+}
+
+.publicaciones__subtitulo {
+  margin: 0;
+  color: var(--color-texto-suave);
+  font-size: 0.95rem;
+}

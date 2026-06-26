@@ -1,6 +1,10 @@
 <article class="tarjeta publicacion-card">
     <header class="publicacion-card__encabezado">
-        <h2 class="publicacion-card__titulo">{{ publicacion.titulo }}</h2>
+        <h2 class="publicacion-card__titulo">
+            <a [routerLink]="['/publicaciones', publicacion.id]" class="publicacion-card__titulo-enlace">
+                {{ publicacion.titulo }}
+            </a>
+        </h2>
         @if (publicacion.fechaCreacion) {
         <time class="publicacion-card__fecha" [dateTime]="publicacion.fechaCreacion">
             {{ formatearFecha(publicacion.fechaCreacion) }}
@@ -15,11 +19,22 @@
     }
 
     <footer class="publicacion-card__acciones">
-        <button mat-stroked-button type="button" class="publicacion-card__like" [disabled]="!usuarioId || cargandoLike"
-            (click)="toggleLike()">
-            {{ dioLike ? 'Quitar me gusta' : 'Me gusta' }}
-            ({{ publicacion.cantidadMeGusta }})
-        </button>
+        <div class="publicacion-card__reacciones">
+            <button mat-icon-button type="button" class="publicacion-card__like"
+                [class.publicacion-card__like--activo]="dioLike" [disabled]="!usuarioId || cargandoLike"
+                (click)="toggleLike()" [attr.aria-label]="dioLike ? 'Quitar me gusta' : 'Me gusta'">
+                <span class="publicacion-card__like-icono" aria-hidden="true">
+                    {{ dioLike ? '♥' : '♡' }}
+                </span>
+            </button>
+            <span class="publicacion-card__like-contador">{{ publicacion.cantidadMeGusta }}</span>
+
+            @if ((publicacion.cantidadComentarios ?? 0) > 0) {
+            <a [routerLink]="['/publicaciones', publicacion.id]" class="publicacion-card__comentarios">
+                Comentarios ({{ publicacion.cantidadComentarios }})
+            </a>
+            }
+        </div>
 
         @if (esAutor) {
         <button mat-button color="warn" type="button" [disabled]="cargandoEliminar" (click)="eliminar()">

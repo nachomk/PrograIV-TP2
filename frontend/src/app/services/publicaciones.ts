@@ -35,4 +35,7 @@ export class Publicaciones {
     eliminar(publicacionId: string): Observable<Publicacion> {
         return this.http.delete<Publicacion>(`${this.apiUrl}/${publicacionId}`);
     }
+    obtenerPorId(id: string): Observable<Publicacion> {
+        return this.http.get<Publicacion>(`${this.apiUrl}/${id}`);
+    }
 }

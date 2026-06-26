@@ -1,0 +1,125 @@
+.publicacion-detalle__volver {
+    margin-bottom: 1rem;
+}
+
+.publicacion-detalle__publicacion {
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.publicacion-detalle__titulo {
+    margin: 0 0 0.35rem;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.75rem;
+    color: var(--color-texto);
+}
+
+.publicacion-detalle__fecha,
+.publicacion-detalle__fecha-comentario {
+    font-size: 0.85rem;
+    color: var(--color-texto-suave);
+}
+
+.publicacion-detalle__descripcion {
+    margin: 1rem 0;
+    font-size: 1rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.publicacion-detalle__imagen {
+    display: block;
+    width: 100%;
+    max-height: 420px;
+    object-fit: contain;
+    border-radius: var(--radio-md);
+    border: 1px solid var(--color-borde);
+    margin-bottom: 1rem;
+}
+
+.publicacion-detalle__likes {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--color-texto-suave);
+}
+
+.publicacion-detalle__comentarios {
+    padding: 1.25rem 1.5rem;
+}
+
+.publicacion-detalle__comentarios-titulo {
+    margin: 0 0 1rem;
+    font-size: 1.2rem;
+}
+
+.publicacion-detalle__field {
+    width: 100%;
+}
+
+.publicacion-detalle__form-comentario,
+.publicacion-detalle__form-edicion {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.publicacion-detalle__lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.publicacion-detalle__item {
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--color-borde);
+}
+
+.publicacion-detalle__item-encabezado {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.publicacion-detalle__autor {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.publicacion-detalle__editado {
+    font-size: 0.75rem;
+    padding: 0.15rem 0.45rem;
+    border-radius: 999px;
+    background: var(--color-superficie-clara);
+    border: 1px solid var(--color-borde);
+    color: var(--color-texto-suave);
+}
+
+.publicacion-detalle__texto {
+    margin: 0 0 0.5rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.publicacion-detalle__acciones-edicion {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.publicacion-detalle__cargar-mas {
+    margin-top: 1rem;
+}
+
+.publicacion-detalle__estado,
+.publicacion-detalle__vacio {
+    color: var(--color-texto-suave);
+}
+
+.publicacion-detalle__error {
+    color: #b42318;
+    margin: 0.5rem 0;
+}

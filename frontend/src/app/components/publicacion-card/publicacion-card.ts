@@ -2,10 +2,11 @@ import { ChangeDetectorRef, Component, EventEmitter, inject, Input, Output } fro
 import { MatButtonModule } from '@angular/material/button';
 import { Publicaciones } from '../../services/publicaciones';
 import { Publicacion } from '../../clases/publicacion';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-publicacion-card',
-  imports: [MatButtonModule],
+  imports: [MatButtonModule, RouterLink],
   templateUrl: './publicacion-card.html',
   styleUrl: './publicacion-card.css',
 })

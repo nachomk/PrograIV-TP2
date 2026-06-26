@@ -2,7 +2,12 @@ import { Routes } from '@angular/router';
 import { authGuard, guestGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '', redirectTo: 'cargando', pathMatch: 'full' },
+  {
+    path: 'cargando',
+    loadComponent: () =>
+      import('./components/cargando/cargando').then((m) => m.Cargando),
+  },
   {
     path: 'login',
     canActivate: [guestGuard],
@@ -20,6 +25,14 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadComponent: () =>
       import('./components/publicaciones/publicaciones').then((m) => m.Publicaciones),
+  },
+  {
+    path: 'publicaciones/:id',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./components/publicacion-detalle/publicacion-detalle').then(
+        (m) => m.PublicacionDetalle,
+      ),
   },
   {
     path: 'mi-perfil',
