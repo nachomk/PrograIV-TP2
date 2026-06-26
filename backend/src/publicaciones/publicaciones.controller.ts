@@ -4,7 +4,7 @@ import { PublicacionesService } from './publicaciones.service';
 import { CreatePublicacionDto } from './dto/create-publicacion.dto';
 import { ListarPublicacionesDto } from './dto/listar-publicaciones.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { AuthGuard } from '../auth/guards/auth.guard';
 
 @Controller('publicaciones')
 export class PublicacionesController {

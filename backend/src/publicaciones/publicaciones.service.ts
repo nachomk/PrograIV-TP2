@@ -6,7 +6,7 @@ import { Usuario } from '../usuarios/entities/usuario.entity';
 import { CreatePublicacionDto } from './dto/create-publicacion.dto';
 import { ListarPublicacionesDto, OrdenPublicaciones } from './dto/listar-publicaciones.dto';
 import { StorageService } from '../storage/storage.service';
-import { Comentario } from 'src/comentarios/entities/comentario.entity';
+import { Comentario } from '../comentarios/entities/comentario.entity';
 @Injectable()
 export class PublicacionesService {
   constructor (

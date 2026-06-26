@@ -5,7 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Publicacion, PublicacionSchema } from './entities/publicacion.entity';
 import { UsuariosModule } from '../usuarios/usuarios.module';
 import { StorageModule } from '../storage/storage.module';
-import { AuthModule } from 'src/auth/auth.module';
+import { AuthModule } from '../auth/auth.module';
 import { Comentario, ComentarioSchema } from '../comentarios/entities/comentario.entity';
 
 @Module({
