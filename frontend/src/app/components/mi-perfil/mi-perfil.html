@@ -15,62 +15,219 @@
             </span>
           }
         </div>
-        <div>
+
+        <div class="mi-perfil__info">
           <h1 class="mi-perfil__titulo">{{ usuario.nombre }} {{ usuario.apellido }}</h1>
           <p class="mi-perfil__usuario">@{{ usuario.nombreUsuario }}</p>
+          <span class="mi-perfil__badge">{{ usuario.perfil | etiquetaPerfil }}</span>
         </div>
+
+        @if (!editando) {
+          <button
+            mat-stroked-button
+            type="button"
+            class="mi-perfil__btn-editar"
+            (click)="iniciarEdicion(usuario)"
+          >
+            Editar perfil
+          </button>
+        }
       </header>
 
-      <div class="mi-perfil__datos">
-        <div class="mi-perfil__fila">
-          <span class="mi-perfil__etiqueta">Correo</span>
-          <span class="mi-perfil__valor">{{ usuario.correo }}</span>
-        </div>
-        <div class="mi-perfil__fila">
-          <span class="mi-perfil__etiqueta">Perfil</span>
-          <span class="mi-perfil__valor">{{ usuario.perfil }}</span>
-        </div>
-        <div class="mi-perfil__fila">
-          <span class="mi-perfil__etiqueta">Descripción</span>
-          <span class="mi-perfil__valor">{{ usuario.descripcion }}</span>
-        </div>
-      </div>
+      @if (mensajeExito) {
+        <p class="mi-perfil__exito" role="status">{{ mensajeExito }}</p>
+      }
 
-      <section class="mi-perfil__publicaciones">
+      @if (editando) {
+        <section class="mi-perfil__seccion">
+          <h2 class="mi-perfil__subtitulo">Editar datos</h2>
+
+          <form
+            [formGroup]="perfilForm"
+            (ngSubmit)="guardarPerfil()"
+            class="mi-perfil__form"
+          >
+            <div class="mi-perfil__fila-form">
+              <mat-form-field appearance="outline" class="mi-perfil__field">
+                <mat-label>Nombre</mat-label>
+                <input matInput formControlName="nombre" maxlength="30" />
+                @if (nombre?.hasError('required') && nombre?.touched) {
+                  <mat-error>El nombre es obligatorio</mat-error>
+                }
+                @if (nombre?.hasError('minlength') && nombre?.touched) {
+                  <mat-error>Mínimo 2 caracteres</mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="mi-perfil__field">
+                <mat-label>Apellido</mat-label>
+                <input matInput formControlName="apellido" maxlength="30" />
+                @if (apellido?.hasError('required') && apellido?.touched) {
+                  <mat-error>El apellido es obligatorio</mat-error>
+                }
+                @if (apellido?.hasError('minlength') && apellido?.touched) {
+                  <mat-error>Mínimo 2 caracteres</mat-error>
+                }
+              </mat-form-field>
+            </div>
+
+            <mat-form-field appearance="outline" class="mi-perfil__field">
+              <mat-label>Correo electrónico</mat-label>
+              <input matInput type="email" formControlName="correo" maxlength="80" />
+              @if (correo?.hasError('required') && correo?.touched) {
+                <mat-error>El correo es obligatorio</mat-error>
+              }
+              @if (correo?.hasError('email') && correo?.touched) {
+                <mat-error>Formato de correo inválido</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="mi-perfil__field">
+              <mat-label>Nombre de usuario</mat-label>
+              <input matInput formControlName="nombreUsuario" maxlength="20" />
+              @if (nombreUsuario?.hasError('required') && nombreUsuario?.touched) {
+                <mat-error>El usuario es obligatorio</mat-error>
+              }
+              @if (nombreUsuario?.hasError('pattern') && nombreUsuario?.touched) {
+                <mat-error>Solo letras, números y guión bajo</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="mi-perfil__field">
+              <mat-label>Fecha de nacimiento</mat-label>
+              <input
+                matInput
+                [matDatepicker]="picker"
+                formControlName="fechaNacimiento"
+                readonly
+              />
+              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+              @if (fechaNacimiento?.hasError('required') && fechaNacimiento?.touched) {
+                <mat-error>La fecha es obligatoria</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="mi-perfil__field">
+              <mat-label>Descripción</mat-label>
+              <textarea
+                matInput
+                formControlName="descripcion"
+                rows="3"
+                maxlength="200"
+              ></textarea>
+              @if (descripcion?.hasError('required') && descripcion?.touched) {
+                <mat-error>La descripción es obligatoria</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="mi-perfil__field">
+              <mat-label>Nueva contraseña</mat-label>
+              <input matInput type="password" formControlName="clave" autocomplete="new-password" />
+              <mat-hint>Opcional. Dejala vacía si no querés cambiarla.</mat-hint>
+            </mat-form-field>
+
+            <div class="mi-perfil__archivo">
+              <label class="mi-perfil__archivo-label" for="imagenPerfilEdit">
+                Foto de perfil <span class="mi-perfil__opcional">(opcional)</span>
+              </label>
+              <input
+                id="imagenPerfilEdit"
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                class="mi-perfil__archivo-input"
+                (change)="onImagenSeleccionada($event)"
+              />
+              @if (nombreArchivo) {
+                <span class="mi-perfil__archivo-nombre">{{ nombreArchivo }}</span>
+              }
+            </div>
+
+            @if (mensajeError) {
+              <p class="mi-perfil__alerta mi-perfil__alerta--error" role="alert">
+                {{ mensajeError }}
+              </p>
+            }
+
+            <div class="mi-perfil__acciones-form">
+              <button
+                mat-stroked-button
+                type="button"
+                (click)="cancelarEdicion()"
+                [disabled]="guardando"
+              >
+                Cancelar
+              </button>
+              <button
+                mat-flat-button
+                color="primary"
+                type="submit"
+                [disabled]="guardando || perfilForm.invalid"
+              >
+                {{ guardando ? 'Guardando...' : 'Guardar cambios' }}
+              </button>
+            </div>
+          </form>
+        </section>
+      } @else {
+        <section class="mi-perfil__seccion">
+          <h2 class="mi-perfil__subtitulo">Información personal</h2>
+
+          <dl class="mi-perfil__datos">
+            <div class="mi-perfil__fila">
+              <dt class="mi-perfil__etiqueta">Correo</dt>
+              <dd class="mi-perfil__valor">{{ usuario.correo }}</dd>
+            </div>
+            <div class="mi-perfil__fila">
+              <dt class="mi-perfil__etiqueta">Perfil</dt>
+              <dd class="mi-perfil__valor">{{ usuario.perfil | etiquetaPerfil}}</dd>
+            </div>
+            <div class="mi-perfil__fila">
+              <dt class="mi-perfil__etiqueta">Descripción</dt>
+              <dd class="mi-perfil__valor">{{ usuario.descripcion }}</dd>
+            </div>
+          </dl>
+        </section>
+      }
+
+      <section class="mi-perfil__seccion mi-perfil__publicaciones">
         <h2 class="mi-perfil__subtitulo">Últimas publicaciones</h2>
-      
+
         @if (cargandoPublicaciones) {
           <p class="mi-perfil__estado">Cargando publicaciones...</p>
         }
-      
+
         @if (errorPublicaciones) {
-          <p class="mi-perfil__error" role="alert">{{ errorPublicaciones }}</p>
+          <p class="mi-perfil__alerta mi-perfil__alerta--error" role="alert">
+            {{ errorPublicaciones }}
+          </p>
         }
-      
+
         @if (!cargandoPublicaciones && !errorPublicaciones && publicaciones.length === 0) {
           <p class="mi-perfil__vacio">Todavía no publicaste nada.</p>
         }
-      
+
         @if (!cargandoPublicaciones && publicaciones.length > 0) {
-          @for (pub of publicaciones; track pub.id) {
+          <div class="mi-perfil__lista-pubs">
+            @for (pub of publicaciones; track pub.id) {
             <app-publicacion-card
               [publicacion]="pub"
               [usuarioId]="usuario.id ?? null"
               [dioLike]="likesDados.has(pub.id)"
+              [esAdmin]="usuario.perfil === 'administrador'"
               (actualizada)="onActualizada($event)"
               (eliminada)="onEliminada($event)"
               (dioLikeChange)="onLikeChange(pub.id, $event)"
-            />
-          }
+             />
+            }
+          </div>
         }
       </section>
     </article>
   } @else {
     <article class="tarjeta mi-perfil__card mi-perfil__card--vacio">
       <h1 class="mi-perfil__titulo">Mi perfil</h1>
-      <p class="mi-perfil__texto">
-        Iniciá sesión para ver tus datos.
-      </p>
+      <p class="mi-perfil__texto">Iniciá sesión para ver tus datos.</p>
       <a mat-flat-button color="primary" routerLink="/login">Iniciar sesión</a>
     </article>
   }

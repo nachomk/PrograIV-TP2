@@ -3,10 +3,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { Publicaciones } from '../../services/publicaciones';
 import { Publicacion } from '../../clases/publicacion';
 import { RouterLink } from '@angular/router';
+import { FechaCortaPipe } from '../../shared/pipes/fecha-corta.pipe';
+import { ResumirTextoPipe } from '../../shared/pipes/resumir-texto.pipe';
+import { ConfirmarClickDirective } from '../../shared/directives/confirmar-click.directive';
 
 @Component({
   selector: 'app-publicacion-card',
-  imports: [MatButtonModule, RouterLink],
+  imports: [MatButtonModule, RouterLink, FechaCortaPipe, ResumirTextoPipe, ConfirmarClickDirective],
   templateUrl: './publicacion-card.html',
   styleUrl: './publicacion-card.css',
 })
@@ -17,6 +20,7 @@ export class PublicacionCard {
   @Input({ required: true }) publicacion!: Publicacion
   @Input() usuarioId: string | null = null
   @Input() dioLike = false
+  @Input() esAdmin = false;
 
   @Output() actualizada = new EventEmitter<Publicacion>()
   @Output() eliminada = new EventEmitter<string>()
@@ -53,7 +57,7 @@ export class PublicacionCard {
   }
 
   protected eliminar(): void {
-    if (!this.usuarioId || !this.esAutor || this.cargandoEliminar) return
+    if (!this.usuarioId || !this.puedeEliminar || this.cargandoEliminar) return
 
     this.cargandoEliminar = true
     this.publicacionesService.eliminar(this.publicacion.id)
@@ -77,5 +81,9 @@ export class PublicacionCard {
       month: 'short',
       year: 'numeric'
     })
+  }
+
+  protected get puedeEliminar(): boolean {
+    return !!this.usuarioId && (this.esAutor || this.esAdmin);
   }
 }

@@ -10,6 +10,7 @@ export interface Publicacion {
   activa: boolean;
   fechaCreacion: string | null;
   cantidadComentarios?: number;
+  yoDiLike?: boolean;
 }
 
 export interface ListarPublicacionesParams {

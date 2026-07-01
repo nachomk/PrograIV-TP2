@@ -178,6 +178,12 @@ export class Publicaciones implements OnInit {
           this.publicaciones = resp.datos;
           this.total = resp.total;
           this.offset = resp.offset;
+          this.likesDados.clear();
+          for (const pub of resp.datos) {
+            if (pub.yoDiLike) {
+              this.likesDados.add(pub.id);
+            }
+          }
           this.cargando = false;
           this.cdr.detectChanges();
         },

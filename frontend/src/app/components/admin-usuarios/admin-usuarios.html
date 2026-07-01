@@ -1,0 +1,137 @@
+<section class="pagina admin-usuarios">
+    <article class="tarjeta admin-usuarios__card">
+        <header class="admin-usuarios__encabezado">
+            <div>
+                <h1 class="admin-usuarios__titulo">Gestión de usuarios</h1>
+                <p class="admin-usuarios__subtitulo-pagina">
+                    Crear cuentas y administrar el estado de los usuarios
+                </p>
+            </div>
+        </header>
+        @if (mensajeExito) {
+        <p class="admin-usuarios__exito" role="status">{{ mensajeExito }}</p>
+        }
+
+        @if (mensajeError) {
+        <p class="admin-usuarios__error" role="alert">{{ mensajeError }}</p>
+        }
+
+        <section class="admin-usuarios__seccion">
+            <h2 class="admin-usuarios__subtitulo">Crear usuario</h2>
+
+            <form [formGroup]="crearForm" (ngSubmit)="crearUsuario()" class="admin-usuarios__form">
+                <div class="admin-usuarios__fila">
+                    <mat-form-field appearance="outline" class="admin-usuarios__field">
+                        <mat-label>Nombre</mat-label>
+                        <input matInput formControlName="nombre" />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="admin-usuarios__field">
+                        <mat-label>Apellido</mat-label>
+                        <input matInput formControlName="apellido" />
+                    </mat-form-field>
+                </div>
+
+                <mat-form-field appearance="outline" class="admin-usuarios__field">
+                    <mat-label>Correo</mat-label>
+                    <input matInput type="email" formControlName="correo" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="admin-usuarios__field">
+                    <mat-label>Usuario</mat-label>
+                    <input matInput formControlName="nombreUsuario" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="admin-usuarios__field">
+                    <mat-label>Fecha de nacimiento</mat-label>
+                    <input matInput [matDatepicker]="picker" formControlName="fechaNacimiento" readonly />
+                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="admin-usuarios__field">
+                    <mat-label>Descripción</mat-label>
+                    <textarea matInput formControlName="descripcion" rows="2"></textarea>
+                </mat-form-field>
+
+                <div class="admin-usuarios__fila">
+                    <mat-form-field appearance="outline" class="admin-usuarios__field">
+                        <mat-label>Contraseña</mat-label>
+                        <input matInput type="password" formControlName="clave" />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="admin-usuarios__field">
+                        <mat-label>Perfil</mat-label>
+                        <mat-select formControlName="perfil">
+                            <mat-option value="usuario">Usuario</mat-option>
+                            <mat-option value="administrador">Administrador</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="admin-usuarios__acciones-form">
+                    <button mat-flat-button color="primary" type="submit" [disabled]="creando || crearForm.invalid">
+                      {{ creando ? 'Creando...' : 'Crear usuario' }}
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <section class="admin-usuarios__seccion">
+            <h2 class="admin-usuarios__subtitulo">Usuarios registrados</h2>
+
+            @if (cargando) {
+            <p class="admin-usuarios__estado">Cargando usuarios...</p>
+            }
+
+            @if (!cargando && usuarios.length === 0) {
+            <p class="admin-usuarios__estado">No hay usuarios.</p>
+            }
+
+            @if (!cargando && usuarios.length > 0) {
+            <div class="admin-usuarios__lista">
+                @for (u of usuarios; track u.id) {
+                    <div class="admin-usuarios__item" [appResaltarInactivo]="!u.activa">
+                        <div class="admin-usuarios__avatar" aria-hidden="true">
+                          {{ u.nombre.charAt(0) }}{{ u.apellido.charAt(0) }}
+                        </div>
+      
+                        <div class="admin-usuarios__info">
+                          <strong class="admin-usuarios__nombre">{{ u.nombre }} {{ u.apellido }}</strong>
+                          <span class="admin-usuarios__detalle">@{{ u.nombreUsuario }} · {{ u.correo }}</span>
+                          <div class="admin-usuarios__meta">
+                            <span class="admin-usuarios__badge">{{ u.perfil | etiquetaPerfil }}</span>
+                            <span
+                              class="admin-usuarios__estado-badge"
+                              [class.admin-usuarios__estado-badge--inactivo]="!u.activa"
+                            >
+                              {{ u.activa ? 'Activo' : 'Deshabilitado' }}
+                            </span>
+                          </div>
+                        </div>
+      
+                        <div class="admin-usuarios__acciones">
+                          @if (u.activa) {
+                            <button
+                              mat-stroked-button
+                              color="warn"
+                              type="button"
+                              [disabled]="u.id === usuarioActualId"
+                              (click)="deshabilitar(u)"
+                              appConfirmarClick="¿Seguro que querés deshabilitar este usuario?"
+                            >
+                              Deshabilitar
+                            </button>
+                          } @else {
+                            <button mat-flat-button color="primary" type="button" (click)="rehabilitar(u)">
+                              Rehabilitar
+                            </button>
+                          }
+                        </div>
+                      </div>
+                }
+            </div>
+            }
+        </section>
+    </article>
+</section>

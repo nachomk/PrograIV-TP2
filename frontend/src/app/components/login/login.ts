@@ -11,6 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { Auth } from '../../services/auth';
 import { validarFortalezaClave } from '../../config/validadores';
+import { AutoFocusDirective } from '../../shared/directives/auto-focus.directive';
 
 @Component({
   selector: 'app-login',
@@ -20,6 +21,7 @@ import { validarFortalezaClave } from '../../config/validadores';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
+    AutoFocusDirective
   ],
   templateUrl: './login.html',
   styleUrl: './login.css',
@@ -61,9 +63,11 @@ export class Login {
         this.cdr.detectChanges();
         this.router.navigate(['/publicaciones']);
       },
-      error: () => {
+      error: (err) => {
         this.cargando = false;
-        this.mensajeError = 'Correo/usuario o contraseña incorrectos.';
+        this.mensajeError =
+          err.error?.message ??
+          'Correo/usuario o contraseña incorrectos.';
         this.cdr.detectChanges();
       },
     });

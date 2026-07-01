@@ -7,12 +7,12 @@
         </h2>
         @if (publicacion.fechaCreacion) {
         <time class="publicacion-card__fecha" [dateTime]="publicacion.fechaCreacion">
-            {{ formatearFecha(publicacion.fechaCreacion) }}
+            {{ publicacion.fechaCreacion | fechaCorta }}
         </time>
         }
     </header>
 
-    <p class="publicacion-card__descripcion">{{ publicacion.descripcion }}</p>
+    <p class="publicacion-card__descripcion">{{ publicacion.descripcion | resumirTexto:150 }}</p>
 
     @if (publicacion.imagenUrl) {
     <img [src]="publicacion.imagenUrl" [alt]="'Imagen de ' + publicacion.titulo" class="publicacion-card__imagen" />
@@ -36,8 +36,8 @@
             }
         </div>
 
-        @if (esAutor) {
-        <button mat-button color="warn" type="button" [disabled]="cargandoEliminar" (click)="eliminar()">
+        @if (puedeEliminar) {
+        <button mat-button color="warn" type="button" [disabled]="cargandoEliminar" (click)="eliminar()" appConfirmarClick="¿Seguro que querés eliminar esta publicación?">
             {{ cargandoEliminar ? 'Eliminando...' : 'Eliminar' }}
         </button>
         }

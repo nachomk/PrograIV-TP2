@@ -11,6 +11,14 @@
       </a>
 
       @if (sesion$ | async; as usuario) {
+        @if (usuario.perfil === 'administrador') {
+          <a mat-button routerLink="/usuarios" routerLinkActive="nav-bar__link--activo">
+            Usuarios
+          </a>
+          <a mat-button routerLink="/estadisticas" routerLinkActive="nav-bar__link--activo">
+            Estadísticas
+          </a>
+        }
       <span class="nav-bar__usuario">{{ usuario.nombre }}</span>
       <button mat-stroked-button type="button" (click)="cerrarSesion()">
         Salir

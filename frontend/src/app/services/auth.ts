@@ -70,13 +70,12 @@ export class Auth {
     return this.sesionSubject.value !== null;
   }
 
-  private restaurarSesion(): Observable<Usuario | null> {
-    return this.autorizar().pipe(
-      catchError(() => {
-        this.limpiarSesion();
-        return of(null);
-      }),
-    );
+  actualizarUsuarioEnSesion(usuario: Usuario): void {
+    const actual = this.sesionSubject.value;
+    this.sesionSubject.next({
+      ...usuario,
+      expiraEn: actual?.expiraEn ?? usuario.expiraEn,
+    });
   }
 
   private establecerSesion(usuario: Usuario): void {

@@ -149,6 +149,7 @@
           [dioLike]="likesDados.has(pub.id)"
           (actualizada)="onActualizada($event)"
           (eliminada)="onEliminada($event)"
+          [esAdmin]="usuario.perfil === 'administrador'"
           (dioLikeChange)="onLikeChange(pub.id, $event)"
         />
       }

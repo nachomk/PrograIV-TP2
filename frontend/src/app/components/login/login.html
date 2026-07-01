@@ -13,6 +13,7 @@
           formControlName="identificador"
           autocomplete="username"
           placeholder="ejemplo@mail.com o tu_usuario"
+          appAutoFocus
         />
         @if (identificador?.hasError('required') && identificador?.touched) {
           <mat-error>Este campo es obligatorio</mat-error>

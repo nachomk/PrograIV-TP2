@@ -1,0 +1,67 @@
+<section class="pagina dashboard-estadisticas">
+    <article class="tarjeta dashboard-estadisticas__card">
+      <header class="dashboard-estadisticas__encabezado">
+        <div>
+          <h1 class="dashboard-estadisticas__titulo">Dashboard de estadísticas</h1>
+          <p class="dashboard-estadisticas__subtitulo">
+            Métricas de publicaciones y comentarios por rango de fechas
+          </p>
+        </div>
+      </header>
+  
+      <div class="dashboard-estadisticas__panel-filtros">
+        <form [formGroup]="filtrosForm" (ngSubmit)="cargarEstadisticas()" class="dashboard-estadisticas__filtros">
+          <mat-form-field appearance="outline" class="dashboard-estadisticas__field">
+            <mat-label>Desde</mat-label>
+            <input matInput [matDatepicker]="desdePicker" formControlName="fechaDesde" />
+            <mat-datepicker-toggle matIconSuffix [for]="desdePicker"></mat-datepicker-toggle>
+            <mat-datepicker #desdePicker></mat-datepicker>
+          </mat-form-field>
+  
+          <mat-form-field appearance="outline" class="dashboard-estadisticas__field">
+            <mat-label>Hasta</mat-label>
+            <input matInput [matDatepicker]="hastaPicker" formControlName="fechaHasta" />
+            <mat-datepicker-toggle matIconSuffix [for]="hastaPicker"></mat-datepicker-toggle>
+            <mat-datepicker #hastaPicker></mat-datepicker>
+          </mat-form-field>
+  
+          <button
+            mat-flat-button
+            color="primary"
+            type="submit"
+            class="dashboard-estadisticas__btn"
+            [disabled]="cargando || filtrosForm.invalid"
+          >
+            {{ cargando ? 'Cargando...' : 'Actualizar' }}
+          </button>
+        </form>
+      </div>
+  
+      @if (mensajeError) {
+        <p class="dashboard-estadisticas__error" role="alert">{{ mensajeError }}</p>
+      }
+  
+      <div class="dashboard-estadisticas__graficos">
+        <div class="dashboard-estadisticas__grafico-card">
+          <h2 class="dashboard-estadisticas__grafico-titulo">Publicaciones por usuario</h2>
+          <div class="dashboard-estadisticas__canvas-wrap">
+            <canvas #chartPublicaciones></canvas>
+          </div>
+        </div>
+  
+        <div class="dashboard-estadisticas__grafico-card">
+          <h2 class="dashboard-estadisticas__grafico-titulo">Comentarios realizados</h2>
+          <div class="dashboard-estadisticas__canvas-wrap">
+            <canvas #chartComentarios></canvas>
+          </div>
+        </div>
+  
+        <div class="dashboard-estadisticas__grafico-card dashboard-estadisticas__grafico-card--ancho">
+          <h2 class="dashboard-estadisticas__grafico-titulo">Comentarios por publicación</h2>
+          <div class="dashboard-estadisticas__canvas-wrap dashboard-estadisticas__canvas-wrap--pie">
+            <canvas #chartPorPublicacion></canvas>
+          </div>
+        </div>
+      </div>
+    </article>
+  </section>
