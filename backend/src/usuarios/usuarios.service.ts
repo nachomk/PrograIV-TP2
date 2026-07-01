@@ -7,7 +7,7 @@ import { Model, Types } from 'mongoose';
 import { CreateUsuarioAdminDto } from './dto/create-usuario-admin.dto';
 import * as bcrypt from 'bcrypt';
 import { UpdateMiPerfilDto } from './dto/update-mi-perfil.dto';
-import { StorageService } from 'src/storage/storage.service';
+import { StorageService } from '../storage/storage.service';
 
 @Injectable()
 export class UsuariosService {
