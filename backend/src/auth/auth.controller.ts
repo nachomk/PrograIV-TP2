@@ -96,7 +96,7 @@ import {
   
     private setTokenCookie(res: Response, token: string) {
       const esProd = process.env.NODE_ENV === 'production';
-      const maxAgeMs = 40 * 1000;
+      const maxAgeMs = 60 * 60 * 1000;
       res.cookie('access_token', token, {
         httpOnly: true,
         sameSite: esProd ? 'none' : 'lax',

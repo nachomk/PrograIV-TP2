@@ -24,10 +24,13 @@ export class Usuario {
   clave: string;
 
   @Prop({ default: '' })
-  imagenPerfilUrl: string; // FASE B: URL de Supabase Storage
+  imagenPerfilUrl: string;
 
   @Prop({ required: true, enum: ['usuario', 'administrador'], default: 'usuario' })
   perfil: 'usuario' | 'administrador';
+
+  @Prop({ default: true })
+  activa: boolean;
 }
 
 export const UsuarioSchema = SchemaFactory.createForClass(Usuario);

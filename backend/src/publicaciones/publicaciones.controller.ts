@@ -5,6 +5,7 @@ import { CreatePublicacionDto } from './dto/create-publicacion.dto';
 import { ListarPublicacionesDto } from './dto/listar-publicaciones.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from '../auth/guards/auth.guard';
+import { OptionalAuthGuard } from '../auth/guards/optional-auth.guard';
 
 @Controller('publicaciones')
 export class PublicacionesController {
@@ -62,7 +63,9 @@ export class PublicacionesController {
   }
 
   @Get()
-  findAll(@Query() dto: ListarPublicacionesDto) {
-    return this.publicacionesService.findAll(dto);
+  @UseGuards(OptionalAuthGuard)
+  findAll(@Query() dto: ListarPublicacionesDto, @Req() req: Request) {
+    const usuarioId = req['user']?.sub as string | undefined;
+    return this.publicacionesService.findAll(dto, usuarioId);
   }
 }

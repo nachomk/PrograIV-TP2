@@ -43,6 +43,7 @@ export class PublicacionesService {
   private formatearPublicacion(
     publicacion: Publicacion & { _id; createdAt?: Date },
     cantidadComentarios = 0,
+    usuarioId?: string,
   ) {
     return {
       id: publicacion._id.toString(),
@@ -54,6 +55,9 @@ export class PublicacionesService {
       cantidadComentarios,
       activa: publicacion.activa,
       fechaCreacion: publicacion.createdAt?.toISOString() ?? null,
+      yoDiLike: usuarioId
+        ? publicacion.meGusta.some((id) => id.toString() === usuarioId)
+        : false,
     };
   }
 
@@ -63,12 +67,19 @@ export class PublicacionesService {
     });
   }
 
-  async findAll(dto: ListarPublicacionesDto) {
-    const offset = dto.offset ?? 0
-    const limit = dto.limit ?? 10
-    const orden = dto.orden ?? OrdenPublicaciones.FECHA
-
-    const filtro: { activa: boolean; autor?: string } = { activa: true }
+  async findAll(dto: ListarPublicacionesDto, usuarioId?: string) {
+    const offset = dto.offset ?? 0;
+    const limit = dto.limit ?? 10;
+    const orden = dto.orden ?? OrdenPublicaciones.FECHA;
+    const autoresInactivos = await this.usuarioModel
+      .find({ activa: false })
+      .select('_id')
+      .lean();
+    const idsInactivos = autoresInactivos.map((u) => u._id);
+    const filtro: Record<string, unknown> = {
+      activa: true,
+      autor: { $nin: idsInactivos },
+    };
 
     if(dto.usuarioId) {
       filtro.autor = dto.usuarioId
@@ -101,7 +112,7 @@ export class PublicacionesService {
     const datos = await Promise.all(
       publicaciones.map(async (p) => {
         const cantidadComentarios = await this.contarComentarios(p._id.toString());
-        return this.formatearPublicacion(p, cantidadComentarios);
+        return this.formatearPublicacion(p, cantidadComentarios, usuarioId);
       }),
     );
     return {
@@ -121,9 +132,13 @@ export class PublicacionesService {
     if (!publicacion) {
       throw new NotFoundException('Publicación no encontrada.');
     }
-
+  
+    const autor = await this.usuarioModel.findById(publicacion.autor).select('activa');
+    if (!autor || autor.activa === false) {
+      throw new NotFoundException('Publicación no encontrada.');
+    }
+  
     const cantidadComentarios = await this.contarComentarios(publicacionId);
-
     return this.formatearPublicacion(publicacion, cantidadComentarios);
   }
 
@@ -157,7 +172,7 @@ export class PublicacionesService {
     await publicacion.save()
 
     const cantidadComentarios = await this.contarComentarios(publicacionId);
-    return this.formatearPublicacion(publicacion, cantidadComentarios);
+    return this.formatearPublicacion(publicacion, cantidadComentarios, usuarioId);
   }
 
   async quitarMeGusta(publicacionId: string, usuarioId: string) {
@@ -185,7 +200,7 @@ export class PublicacionesService {
     await publicacion.save()
 
     const cantidadComentarios = await this.contarComentarios(publicacionId);
-    return this.formatearPublicacion(publicacion, cantidadComentarios);
+    return this.formatearPublicacion(publicacion, cantidadComentarios, usuarioId);
   }
   
   async eliminar (publicacionId: string, usuarioId: string) {

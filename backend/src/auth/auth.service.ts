@@ -46,6 +46,7 @@ export class AuthService {
       clave: claveEncriptada,
       imagenPerfilUrl,
       perfil: 'usuario',
+      activa: true
     });
     const usuario = this.respuestaSinClave(usuarioCreado);
     const access_token = await this.generarToken(usuarioCreado);
@@ -68,6 +69,9 @@ export class AuthService {
     if (!valida) {
       throw new UnauthorizedException('Correo/usuario o contraseña incorrectos.');
     }
+
+    this.validarUsuarioActivo(usuario);
+
     const usuarioRespuesta = this.respuestaSinClave(usuario);
     const access_token = await this.generarToken(usuario);
     return { usuario: usuarioRespuesta, access_token };
@@ -78,6 +82,9 @@ export class AuthService {
     if (!usuario) {
       throw new UnauthorizedException('Usuario no encontrado.');
     }
+
+    this.validarUsuarioActivo(usuario);
+
     return this.respuestaSinClave(usuario);
   }
 
@@ -86,7 +93,18 @@ export class AuthService {
     if (!usuario) {
       throw new UnauthorizedException('Usuario no encontrado.');
     }
+
+    this.validarUsuarioActivo(usuario);
+
     return this.generarToken(usuario);
+  }
+
+  private validarUsuarioActivo(usuario: Usuario): void {
+    if (usuario.activa === false) {
+      throw new UnauthorizedException(
+        'Tu cuenta está deshabilitada. No estás autorizado para ingresar.',
+      );
+    }
   }
 
   private async generarToken(usuario: Usuario & { _id }) {
@@ -110,6 +128,7 @@ export class AuthService {
       descripcion: usuario.descripcion,
       imagenPerfilUrl: usuario.imagenPerfilUrl,
       perfil: usuario.perfil,
+      activa: usuario.activa !== false
     };
   }
 }

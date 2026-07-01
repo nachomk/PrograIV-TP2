@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { PublicacionesModule } from './publicaciones/publicaciones-module';
 import { StorageModule } from './storage/storage.module';
 import { ComentariosModule } from './comentarios/comentarios.module';
+import { EstadisticasModule } from './estadisticas/estadisticas.module';
 
 @Module({
   imports: [
@@ -17,7 +18,8 @@ import { ComentariosModule } from './comentarios/comentarios.module';
     AuthModule,
     PublicacionesModule,
     StorageModule,
-    ComentariosModule
+    ComentariosModule,
+    EstadisticasModule
   ],
   controllers: [AppController],
   providers: [AppService],
